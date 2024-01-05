@@ -1,0 +1,45 @@
+from zeroconf import Zeroconf, ServiceInfo
+import socket
+
+def advertise_airplay_service():
+    # Replace the following values with your own information
+    service_type = "_airplay._tcp.local."
+    base_service_name = "iphone._airplay._tcp. "
+    server_name = "DESKTOP-RJEVN3N."
+    port = 7007
+    properties = {}
+
+    # Replace with the actual IP address of your PC
+    pc_ip_address = "192.168.1.12"
+
+    # Create a Zeroconf instance
+    zeroconf = Zeroconf()
+
+    # Advertise multiple services with different names
+    for i in range(1):
+        service_name = f"{base_service_name}_{i}._airplay._tcp.local."
+        service_info = ServiceInfo(
+            service_type,
+            service_name,
+            addresses=[socket.inet_aton(pc_ip_address)],
+            port=port,
+            properties=properties,
+            server=server_name,
+        )
+
+        # Print information about the advertised service
+        print(f"Advertising AirPlay service: {service_name} on {pc_ip_address}:{port} with server {server_name}")
+
+        # Register the service
+        zeroconf.register_service(service_info)
+
+    try:
+        # Wait for user input to stop advertising
+        input("Press Enter to stop advertising the AirPlay services...\n")
+    finally:
+        # Unregister the services and close the Zeroconf instance
+        zeroconf.close()
+
+if __name__ == "__main__":
+    # Run the function to advertise the AirPlay services
+    advertise_airplay_service()
